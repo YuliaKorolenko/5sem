@@ -1,0 +1,45 @@
+grammar boolOp;
+
+s () []
+    ->
+    term() sPrime();
+
+sPrime () []
+    ->
+    XOR term() sPrime()
+    | ε ;
+
+term () []
+    ->
+    f() termPrime();
+
+termPrime () []
+    ->
+    OR f() termPrime()
+    | ε ;
+
+f () []
+    ->
+    k() fPrime();
+
+fPrime () []
+    ->
+    AND k() fPrime()
+    | ε ;
+
+k () []
+    ->
+      NUM
+      | LBRACKET s() RBRACKET
+      | NOT k();
+
+
+NUM: "([a-b])";
+AND: "\\&";
+OR: "\\|";
+XOR: "\\^";
+NOT: "!";
+LBRACKET : "\\(";
+RBRACKET : "\\)";
+
+

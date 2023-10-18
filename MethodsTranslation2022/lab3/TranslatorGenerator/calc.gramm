@@ -1,0 +1,46 @@
+grammar calc;
+
+expression () [int val]
+    ->
+    term() expressionPrime(term0.val) {$val =  expressionPrime1.val;} ;
+
+expressionPrime (int left) [int val]
+    ->
+      ADD term() {$val = left + term1.val;} expressionPrime($val) {$val = expressionPrime2.val;}
+    | SUB term() {$val = left - term1.val;} expressionPrime($val) {$val = expressionPrime2.val;}
+    | ε {$val = left;};
+
+term () [int val]
+    ->
+    degree() termPrime(degree0.val) {$val = termPrime1.val;};
+
+termPrime (int left) [int val]
+    ->
+      MUL degree() {$val = left * degree1.val;} termPrime($val) {$val = termPrime2.val;}
+    | DIV degree() {$val = left / degree1.val;} termPrime($val) {$val = termPrime2.val;}
+    | ε {$val = left;};
+
+degree () [int val]
+    ->
+    factor() degreePrime(factor0.val) {$val = degreePrime1.val;};
+
+degreePrime (int left) [int val]
+    ->
+    POW degree() {$val = (int) Math.pow(left, degree1.val);}
+    | ε {$val = left;};
+
+factor () [int val]
+    ->
+      NUM {$val = Integer.parseInt(NUM0);}
+    | LBRACKET expression() RBRACKET {$val = expression1.val;}
+    | SUB factor() {$val = -1 * factor1.val;} ;
+
+
+NUM: "(0|[1-9][0-9]*)";
+POW: "\\^";
+DIV: "/";
+MUL: "\\*";
+SUB: "-";
+ADD: "\\+";
+LBRACKET : "\\(";
+RBRACKET : "\\)";
